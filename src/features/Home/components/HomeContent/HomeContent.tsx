@@ -62,6 +62,13 @@ export function HomeContent({ user }: userProp) {
       open();
     }
   };
+
+  const handleClickHistory = () => {
+    if (user) {
+      router.push(`/roomHistory?userId=${encodeURIComponent(user.id)}`);
+    }
+  };
+
   return (
     <div className={classes.container}>
       <Container size={800} className={classes.content}>
@@ -116,7 +123,12 @@ export function HomeContent({ user }: userProp) {
               </Card>
             </Grid.Col>
             <Grid.Col span={6}>
-              <Card className={classes.quickActionCard} shadow="md" radius="lg">
+              <Card
+                className={classes.quickActionCard}
+                shadow="md"
+                radius="lg"
+                onClick={handleClickHistory}
+              >
                 <Stack align="center" gap="xs">
                   <div className={classes.quickActionIconGreen}>
                     <IconToolsKitchen2 size={20} />
