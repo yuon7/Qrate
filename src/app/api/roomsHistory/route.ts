@@ -5,8 +5,6 @@ import { cookies } from "next/headers";
 
 const app = new Hono();
 
-// Next.jsのファイルパス `/api/roomsHistory` がこのファイルに対応するため、
-// Honoではルートパス ("/") へのGETリクエストを処理します。
 app.get("/", async (c) => {
   const userId = c.req.query("userId");
   if (!userId) {
@@ -15,7 +13,12 @@ app.get("/", async (c) => {
 
   try {
     const cookieStore = cookies();
-    // 'createServerClient' のシグネチャ非推奨警告に対応した書き方
+
+    // ★★★
+    // お使いの @supabase/ssr のバージョンに合わせ、こちらの書き方を使用します。
+    // 'createServerClient' に非推奨の警告(ts6387)が表示される場合がありますが、
+    // これはエラーではないため、現時点では無視して問題ありません。
+    // ★★★
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
