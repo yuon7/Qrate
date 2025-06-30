@@ -3,7 +3,7 @@ import { handle } from "hono/vercel";
 import restaurants from "../routes/restaurants";
 import rooms from "../routes/rooms";
 import tabelog from "../routes/tabelog";
-import roomsHistory from "../roomsHistory/route";
+import roomsHistory from "../routes/roomsHistory";
 
 export const runtime = "nodejs";
 

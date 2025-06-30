@@ -1,5 +1,5 @@
-import { Hono } from "hono";
 import { createServerClient } from "@supabase/ssr";
+import { Hono } from "hono";
 import { cookies } from "next/headers";
 
 const roomsHistory = new Hono();
@@ -8,25 +8,29 @@ roomsHistory.get("/roomsHistory", async (c) => {
   const userId = c.req.query("userId");
   if (!userId) return c.json({ error: "userId is required" }, 400);
 
-  const cookieStore = cookies();
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: cookieStore,
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: cookies(),
   });
 
-  const { data, error } = await supabase
+  const {
+    data,
+    error,
+  } = await supabase
     .from("RoomParticipant")
     .select(
       `
-      Room (
-        area,
-        mealType,
-        date,
-        createdAt
-      )
-    `
+        roomId,
+        Room (
+          id,
+          area,
+          mealType,
+          date,
+          createdAt,
+        )
+      `
     )
     .eq("userId", userId);
 
@@ -43,7 +47,10 @@ roomsHistory.get("/roomsHistory", async (c) => {
         new Date(a.Room.createdAt).getTime()
     )
     .slice(0, 10)
-    .map((item: any) => item.Room);
+    .map((item: any) => ({
+      roomId: item.roomId,
+      Room: item.Room,
+    }));
 
   return c.json(parsed);
 });
