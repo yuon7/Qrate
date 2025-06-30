@@ -10,6 +10,7 @@ interface Room {
   createdAt: string;
   date: string;
   mealType: string;
+  maxUser: number;
 }
 
 interface RoomsHistory {
@@ -56,6 +57,7 @@ const RoomHistory = () => {
                 <strong>エリア:</strong> {item.Room.area} <strong>日付:</strong>{" "}
                 {new Date(item.Room.createdAt).toLocaleString()}{" "}
                 <strong>タイプ:</strong> {item.Room.mealType}{" "}
+                <strong>人数:</strong> {item.Room.maxUser}{" "}
               </li>
             ) : null
           )}

@@ -26,9 +26,10 @@ roomsHistory.get("/roomsHistory", async (c) => {
         Room (
           id,
           area,
+          maxUser,
           mealType,
           date,
-          createdAt,
+          createdAt
         )
       `
     )
