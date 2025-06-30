@@ -65,7 +65,7 @@ export function HomeContent({ user }: userProp) {
 
   const handleClickHistory = () => {
     if (user) {
-      router.push(`/roomHistory?userId=${encodeURIComponent(user.id)}`);
+      router.push(`/roomsHistory?userId=${encodeURIComponent(user.id)}`);
     }
   };
 
