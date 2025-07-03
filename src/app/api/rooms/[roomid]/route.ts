@@ -21,9 +21,36 @@ async function getRoomInfo(roomId: string) {
     return { success: false, error: "認証が必要です" };
   }
 
+  let userProfile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+  });
+
+  if (!userProfile) {
+    userProfile = await prisma.profile.create({
+      data: {
+        userId: user.id,
+        name:
+          user.user_metadata?.name || user.email?.split("@")[0] || "ユーザー",
+        avatarUrl: user.user_metadata?.avatar_url || null,
+      },
+    });
+  }
+
   const roomWithParticipant = await prisma.room.findUnique({
     where: { id: roomId },
-    include: { RoomParticipant: true },
+    include: {
+      RoomParticipant: {
+        include: {
+          profile: {
+            select: {
+              name: true,
+              avatarUrl: true,
+              userId: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!roomWithParticipant) {
@@ -48,9 +75,36 @@ async function joinRoom(roomId: string) {
     return { success: false, error: "認証が必要です" };
   }
 
+  let userProfile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+  });
+
+  if (!userProfile) {
+    userProfile = await prisma.profile.create({
+      data: {
+        userId: user.id,
+        name:
+          user.user_metadata?.name || user.email?.split("@")[0] || "ユーザー",
+        avatarUrl: user.user_metadata?.avatar_url || null,
+      },
+    });
+  }
+
   const roomWithParticipant = await prisma.room.findUnique({
     where: { id: roomId },
-    include: { RoomParticipant: true },
+    include: {
+      RoomParticipant: {
+        include: {
+          profile: {
+            select: {
+              name: true,
+              avatarUrl: true,
+              userId: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!roomWithParticipant) {
@@ -80,8 +134,21 @@ async function joinRoom(roomId: string) {
 
   const updatedRoom = await prisma.room.findUnique({
     where: { id: roomId },
-    include: { RoomParticipant: true },
+    include: {
+      RoomParticipant: {
+        include: {
+          profile: {
+            select: {
+              name: true,
+              avatarUrl: true,
+              userId: true,
+            },
+          },
+        },
+      },
+    },
   });
+
   if (!updatedRoom) {
     return { success: false, error: "ルーム情報の取得に失敗しました" };
   }
