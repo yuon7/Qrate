@@ -72,6 +72,7 @@ export function ParticipantsSection({
               <Box className={styles.avatarWrapper}>
                 <Avatar
                   src={participant.profile.avatarUrl}
+                  alt={displayName}
                   radius="xl"
                   size="md"
                   color={participant.isHost ? "blue" : "gray"}
