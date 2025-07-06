@@ -16,6 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./QuizPage.module.css";
 import React from "react";
+import { saveRecommendationResult } from "@/lib/sessionStorage/recommendSession";
 
 export default function QuizPage() {
   const searchParams = useSearchParams();
@@ -113,10 +114,12 @@ export default function QuizPage() {
           answers
         );
         if ("result" in aiAgentres && Array.isArray(aiAgentres.result)) {
-          const encodedData = encodeURIComponent(
-            JSON.stringify(aiAgentres.result)
+          const sessionId = saveRecommendationResult(
+            aiAgentres.result,
+            roomId
           );
-          router.push(`/recommend-result?roomid=${roomId}&data=${encodedData}`);
+          
+          router.push(`/recommend-result?sessionId=${sessionId}`);
         } else {
           console.error("Invalid response format:", aiAgentres);
         }
