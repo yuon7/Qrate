@@ -1,6 +1,5 @@
-import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@/utils/supabase/server";
 import { Hono } from "hono";
-import { cookies } from "next/headers";
 
 const roomsHistory = new Hono();
 
@@ -8,17 +7,9 @@ roomsHistory.get("/roomsHistory", async (c) => {
   const userId = c.req.query("userId");
   if (!userId) return c.json({ error: "userId is required" }, 400);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabase = await createClient();
 
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: cookies(),
-  });
-
-  const {
-    data,
-    error,
-  } = await supabase
+  const { data, error } = await supabase
     .from("RoomParticipant")
     .select(
       `
