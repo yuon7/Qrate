@@ -32,7 +32,7 @@
     "@mantine/form": "^8.0.2",
     "@mantine/hooks": "^7.17.0",
     "@mantinex/dev-icons": "^2.0.0",
-    "@mantinex/mantine-logo": "^1.1.0",
+    "@mantinex/mantine-logo": "^2.0.0",
     "@mastra/core": "^0.10.1",
     "@mastra/libsql": "^0.10.0",
     "@mastra/loggers": "^0.10.0",
