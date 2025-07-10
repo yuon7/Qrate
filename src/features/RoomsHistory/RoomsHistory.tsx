@@ -9,11 +9,11 @@ import {
   Stack,
   Card,
   Group,
-  Loader,
   Alert,
   Title,
 } from "@mantine/core";
 import { IconAlertCircle, IconUsers } from "@tabler/icons-react";
+import { RoomsHistoryCardSkeleton } from "@/components/RoomsHistoryCardSkeleton/RoomsHistoryCardSkeleton";
 
 interface Room {
   id: string;
@@ -56,14 +56,16 @@ const RoomHistory = () => {
 
   return (
     <Container size="sm" py="xl">
-      <Title order={2} mb="md">
+      <Title size="2rem" fw={800} c="white" mt="md" pb={40} ta="center">
         履歴
       </Title>
 
       {loading && (
-        <Group justify="center" py="xl">
-          <Loader color="blue" size="lg" />
-        </Group>
+        <Stack>
+          <RoomsHistoryCardSkeleton />
+          <RoomsHistoryCardSkeleton />
+          <RoomsHistoryCardSkeleton />
+        </Stack>
       )}
 
       {error && (
