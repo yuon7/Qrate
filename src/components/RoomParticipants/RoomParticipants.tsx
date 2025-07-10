@@ -17,6 +17,11 @@ export interface RoomParticipant {
   roomId: string;
   userId: string;
   isHost: boolean;
+  profile: {
+    name: string | null;
+    avatarUrl: string | null;
+    userId: string;
+  };
 }
 
 interface ParticipantsSectionProps {
@@ -53,33 +58,45 @@ export function ParticipantsSection({
       />
 
       <Group>
-        {participants.map((participant, index) => (
-          <Tooltip
-            key={participant.id}
-            label={participant.isHost ? "ホスト" : `参加者${index + 1}`}
-            withArrow
-          >
-            <Box className={styles.avatarWrapper}>
-              <Avatar
-                radius="xl"
-                size="md"
-                color={participant.isHost ? "blue" : "gray"}
-              >
-                {participant.isHost ? "H" : `P${index + 1}`}
-              </Avatar>
-              {participant.isHost && (
-                <ThemeIcon
-                  size="xs"
+        {participants.map((participant, index) => {
+          const displayName =
+            participant.profile.name || `ユーザー${index + 1}`;
+          const roleLabel = participant.isHost ? "ホスト" : "参加者";
+
+          return (
+            <Tooltip
+              key={participant.id}
+              label={`${displayName} (${roleLabel})`}
+              withArrow
+            >
+              <Box className={styles.avatarWrapper}>
+                <Avatar
+                  src={participant.profile.avatarUrl}
+                  alt={displayName}
                   radius="xl"
-                  color="yellow"
-                  className={styles.hostBadge}
+                  size="md"
+                  color={participant.isHost ? "blue" : "gray"}
                 >
-                  <IconCrown size={12} />
-                </ThemeIcon>
-              )}
-            </Box>
-          </Tooltip>
-        ))}
+                  {participant.profile.avatarUrl
+                    ? null
+                    : participant.isHost
+                      ? "H"
+                      : displayName.charAt(0)}
+                </Avatar>
+                {participant.isHost && (
+                  <ThemeIcon
+                    size="xs"
+                    radius="xl"
+                    color="yellow"
+                    className={styles.hostBadge}
+                  >
+                    <IconCrown size={12} />
+                  </ThemeIcon>
+                )}
+              </Box>
+            </Tooltip>
+          );
+        })}
 
         {participantCount < maxUser && (
           <Text size="sm" c="dimmed">
