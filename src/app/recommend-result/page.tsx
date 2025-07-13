@@ -6,6 +6,7 @@ interface RecommendResultPageProps {
   searchParams: {
     data?: string;
     roomid?: string | undefined;
+    sessionId?: string;
   };
 }
 
@@ -21,13 +22,21 @@ export default async function RecommendResultPage({
     redirect("/auth/login");
   }
 
-  if (!searchParams.data) {
+  if (!searchParams.data && !searchParams.sessionId) {
     redirect("/meal3");
   }
 
   let results;
   let roomid: string | undefined;
+  
+  if (searchParams.sessionId) {
+    return <ClientPage user={user} sessionId={searchParams.sessionId} />;
+  }
+
   try {
+    if (!searchParams.data) {
+      redirect("/meal3");
+    }
     results = JSON.parse(decodeURIComponent(searchParams.data));
     roomid = searchParams.roomid;
   } catch (error) {

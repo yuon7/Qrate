@@ -4,6 +4,8 @@ import { RecommendationResults } from "@/features/Recommend/RecommendationResult
 import { Button, Container, Title } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getSession } from "@/lib/sessionStorage/recommendSession";
 
 type Restaurant = {
   name: string;
@@ -32,15 +34,52 @@ type RecommendationResult = {
 interface ClientPageProps {
   user: User;
   roomId?: string;
-  results: RecommendationResult[];
+  results?: RecommendationResult[];
+  sessionId?: string;
 }
 
-export default function ClientPage({ user, results, roomId }: ClientPageProps) {
+export default function ClientPage({ user, results, roomId, sessionId }: ClientPageProps) {
   const router = useRouter();
+  const [sessionResults, setSessionResults] = useState<RecommendationResult[]>([]);
+  const [sessionRoomId, setSessionRoomId] = useState<string | undefined>(roomId);
+  const [loading, setLoading] = useState(Boolean(sessionId));
+
+  useEffect(() => {
+    if (sessionId) {
+      try {
+        const sessionData = getSession(sessionId);
+        if (sessionData) {
+          setSessionResults(sessionData.results || []);
+          setSessionRoomId(sessionData.roomId);
+        } else {
+          console.error("Session data not found");
+          router.push("/meal3");
+        }
+      } catch (error) {
+        console.error("Failed to get session data:", error);
+        router.push("/meal3");
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [sessionId, router]);
 
   const handleGoBack = () => {
     router.back();
   };
+
+  const finalResults = sessionId ? sessionResults : results || [];
+  const finalRoomId = sessionId ? sessionRoomId : roomId;
+
+  if (loading) {
+    return (
+      <Container size="lg" px="lg" py={80}>
+        <Title order={2} mb="xl" ta="center">
+          データを読み込んでいます...
+        </Title>
+      </Container>
+    );
+  }
 
   return (
     <Container size="lg" px="lg" py={80}>
@@ -52,7 +91,7 @@ export default function ClientPage({ user, results, roomId }: ClientPageProps) {
         レストラン推薦結果
       </Title>
 
-      <RecommendationResults results={results} user={user} roomId={roomId} />
+      <RecommendationResults results={finalResults} user={user} roomId={finalRoomId} />
     </Container>
   );
 }
