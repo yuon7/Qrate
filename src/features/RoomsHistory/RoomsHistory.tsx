@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchRoomsHistory } from "@/lib/fetchRoomsHistory/fetchRoomsHistory";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Container,
@@ -12,8 +12,9 @@ import {
   Alert,
   Title,
 } from "@mantine/core";
-import { IconAlertCircle, IconUsers } from "@tabler/icons-react";
+import { IconAlertCircle, IconArrowLeft, IconUsers } from "@tabler/icons-react";
 import { RoomsHistoryCardSkeleton } from "@/components/RoomsHistoryCardSkeleton/RoomsHistoryCardSkeleton";
+import classes from "./RoomsHistory.module.css";
 
 interface Room {
   id: string;
@@ -37,6 +38,11 @@ const RoomHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
+  const handleClickBackHome = () => {
+    router.push("/");
+  };
+
   useEffect(() => {
     if (!userId) return;
 
@@ -56,9 +62,26 @@ const RoomHistory = () => {
 
   return (
     <Container size="sm" py="xl">
-      <Title size="2rem" fw={800} c="white" mt="md" pb={40} ta="center">
+      <Title size="2rem" fw={800} c="white" mt="md" pb={24} ta="center">
         履歴
       </Title>
+
+      <Card
+        withBorder
+        shadow="sm"
+        radius="md"
+        p="xs"
+        mb="xl"
+        className={classes.backHomeCard}
+        onClick={handleClickBackHome}
+      >
+        <Group justify="center" align="center" gap="xs" px="sm" py={4}>
+          <IconArrowLeft size={16} stroke={1.5} />
+          <Text fw={500} size="sm" c="blue.6">
+            ホームに戻る
+          </Text>
+        </Group>
+      </Card>
 
       {loading && (
         <Stack>
@@ -86,7 +109,13 @@ const RoomHistory = () => {
           ) : (
             rooms.map((item) =>
               item.Room ? (
-                <Card key={item.roomId} shadow="sm" radius="md" withBorder>
+                <Card
+                  key={item.roomId}
+                  shadow="sm"
+                  radius="md"
+                  withBorder
+                  className={classes.historyCard}
+                >
                   <Stack gap="xs">
                     <Group>
                       <Text fw={500}>エリア:</Text>
