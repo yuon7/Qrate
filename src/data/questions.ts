@@ -9,6 +9,32 @@ export interface Question {
 
 export const allQuestions: Question[] = [
   {
+    id: 0, // 場所の質問を最初に追加
+    type: "question",
+    text: "どちらのエリアで食事をしたいですか？",
+    options: [
+      "渋谷",
+      "新宿",
+      "銀座",
+      "原宿",
+      "池袋",
+      "上野",
+      "浅草",
+      "六本木",
+      "恵比寿",
+      "中目黒",
+      "吉祥寺",
+      "立川",
+      "町田",
+      "横浜",
+      "川崎",
+      "大宮",
+      "その他",
+    ],
+    allowMultiple: false,
+    required: true,
+  },
+  {
     id: 1,
     type: "question",
     text: "食べたい料理のジャンルは？",
